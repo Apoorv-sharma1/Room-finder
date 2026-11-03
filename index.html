@@ -1,0 +1,196 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>B.Tech Smart Timetable Dashboard</title>
+  <!-- Google Fonts -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+  <!-- Lucide Icons -->
+  <script src="https://unpkg.com/lucide@latest"></script>
+  <!-- Stylesheets -->
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+  <div class="glow-bg"></div>
+  <div class="app-container">
+    
+    <!-- Sidebar / Navigation Panel -->
+    <header class="header">
+      <div class="logo-section">
+        <div class="logo-icon">
+          <i data-lucide="calendar-range"></i>
+        </div>
+        <div class="logo-text">
+          <h1>SmartSchedule</h1>
+          <p>JK Lakshmipat University</p>
+        </div>
+      </div>
+      
+      <!-- Day and Time Quick Picker -->
+      <div class="quick-picker-panel">
+        <div class="picker-group">
+          <label for="day-select"><i data-lucide="calendar"></i> Day</label>
+          <select id="day-select" class="custom-select">
+            <option value="MON">Monday</option>
+            <option value="TUE">Tuesday</option>
+            <option value="WED">Wednesday</option>
+            <option value="THU">Thursday</option>
+            <option value="FRI">Friday</option>
+          </select>
+        </div>
+        
+        <div class="picker-group">
+          <label for="time-select"><i data-lucide="clock"></i> Time Slot</label>
+          <select id="time-select" class="custom-select">
+            <!-- Populated dynamically via JS -->
+          </select>
+        </div>
+      </div>
+    </header>
+
+    <!-- Main Content Area -->
+    <main class="main-content">
+      
+      <!-- Tabs Navigation -->
+      <nav class="tabs-nav">
+        <button class="tab-btn active" data-tab="rooms">
+          <i data-lucide="door-open"></i> Room Locator
+        </button>
+        <button class="tab-btn" data-tab="teachers">
+          <i data-lucide="graduation-cap"></i> Teacher Finder
+        </button>
+        <button class="tab-btn" data-tab="sections">
+          <i data-lucide="users"></i> Section Timetables
+        </button>
+      </nav>
+
+      <!-- TAB 1: ROOM LOCATOR -->
+      <section id="tab-rooms" class="tab-content active">
+        <div class="status-summary-card">
+          <div class="summary-item">
+            <span class="num green-glow" id="free-rooms-count">0</span>
+            <span class="lbl">Available Rooms</span>
+          </div>
+          <div class="summary-separator"></div>
+          <div class="summary-item">
+            <span class="num red-glow" id="busy-rooms-count">0</span>
+            <span class="lbl">Occupied Rooms</span>
+          </div>
+        </div>
+
+        <div class="search-filter-row">
+          <div class="search-box">
+            <i data-lucide="search"></i>
+            <input type="text" id="room-search" placeholder="Search rooms (e.g. EB2-205, TB106)...">
+          </div>
+          <div class="filter-pills">
+            <button class="filter-pill active" data-filter="all">All Rooms</button>
+            <button class="filter-pill" data-filter="free">Only Free</button>
+            <button class="filter-pill" data-filter="busy">Only Occupied</button>
+          </div>
+        </div>
+
+        <div class="rooms-grid" id="rooms-container">
+          <!-- Room cards will be rendered here -->
+        </div>
+      </section>
+
+      <!-- TAB 2: TEACHER FINDER -->
+      <section id="tab-teachers" class="tab-content">
+        <div class="teacher-search-section">
+          <div class="search-box-large">
+            <i data-lucide="search"></i>
+            <input type="text" id="teacher-search-input" placeholder="Type teacher's name (e.g. Amar Nath Patra, Rashmi Kushwaha)..." autocomplete="off">
+            <div class="autocomplete-dropdown" id="teacher-suggestions"></div>
+          </div>
+        </div>
+
+        <div class="teacher-results-area" id="teacher-results" style="display: none;">
+          <!-- Active Status Card -->
+          <div class="teacher-status-card" id="teacher-status-card">
+            <!-- Filled dynamically -->
+          </div>
+
+          <!-- Weekly Schedule Section -->
+          <div class="weekly-schedule-section">
+            <h2 class="section-title"><i data-lucide="calendar-days"></i> Weekly Timetable</h2>
+            <div class="schedule-table-wrapper">
+              <table class="weekly-table">
+                <thead>
+                  <tr id="weekly-table-header">
+                    <th>Day</th>
+                    <!-- Slots populated dynamically -->
+                  </tr>
+                </thead>
+                <tbody id="weekly-table-body">
+                  <!-- Weekly rows populated dynamically -->
+                </tbody>
+              </table>
+            </div>
+          </div>
+        </div>
+
+        <!-- Default No Selection State -->
+        <div class="empty-state" id="teacher-empty-state">
+          <i data-lucide="search-code"></i>
+          <h3>Search for a Teacher</h3>
+          <p>Search for a teacher above to check their availability, location, and full weekly schedule.</p>
+        </div>
+      </section>
+
+      <!-- TAB 3: SECTION TIMETABLES -->
+      <section id="tab-sections" class="tab-content">
+        <div class="section-picker-row">
+          <div class="picker-group">
+            <label for="sem-filter"><i data-lucide="book-open"></i> Semester</label>
+            <select id="sem-filter" class="custom-select">
+              <option value="1st Sem">1st Semester</option>
+              <option value="3rd Sem">3rd Semester</option>
+              <option value="5th Sem">5th Semester</option>
+            </select>
+          </div>
+          
+          <div class="picker-group">
+            <label for="sec-filter"><i data-lucide="users-round"></i> Section</label>
+            <select id="sec-filter" class="custom-select">
+              <!-- Populated dynamically -->
+            </select>
+          </div>
+        </div>
+
+        <!-- Section Weekly Table -->
+        <div class="weekly-schedule-section">
+          <h2 class="section-title" id="section-title-text"><i data-lucide="layout-grid"></i> Class Schedule</h2>
+          <div class="schedule-table-wrapper">
+            <table class="weekly-table">
+              <thead>
+                <tr id="sec-table-header">
+                  <th>Day</th>
+                  <!-- Slots populated dynamically -->
+                </tr>
+              </thead>
+              <tbody id="sec-table-body">
+                <!-- Weekly rows populated dynamically -->
+              </tbody>
+            </table>
+          </div>
+        </div>
+      </section>
+
+    </main>
+
+    <!-- Footer -->
+    <footer class="footer">
+      <p>&copy; 2026 JKLU SmartSchedule Dashboard. Designed for fastest offline accessibility.</p>
+    </footer>
+
+  </div>
+
+  <!-- JavaScript Files -->
+  <script src="timetable_data.js"></script>
+  <script src="app.js"></script>
+</body>
+</html>
